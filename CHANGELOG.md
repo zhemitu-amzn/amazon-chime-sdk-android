@@ -8,6 +8,9 @@
 * [Demo] Added a way to join a meeting without audio.
 * [Demo] Added meeting captions functionality based on the live transcription APIs. You will need to have a serverless deployment to create new AWS Lambda endpoints for live transcription. Follow [the live transcription guide](https://docs.aws.amazon.com/chime/latest/dg/meeting-transcription.html) to create necessary service-linked role so that the demo app can call Amazon Transcribe and Amazon Transcribe Medical on your behalf.
 
+### Fixed
+* [Demo] Fixed demo app crashes when screen share is off and then leave meeting.
+
 ## [0.12.0] - 2021-09-02
 
 ### Added
