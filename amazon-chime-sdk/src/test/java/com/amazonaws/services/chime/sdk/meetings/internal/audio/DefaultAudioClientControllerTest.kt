@@ -20,7 +20,7 @@ import com.amazonaws.services.chime.sdk.meetings.internal.utils.AppInfoUtil
 import com.amazonaws.services.chime.sdk.meetings.utils.logger.Logger
 import com.xodee.client.audio.audioclient.AppInfo
 import com.xodee.client.audio.audioclient.AudioClient
-import com.xodee.client.audio.audioclient.AudioClient.AudioModeNative
+import com.xodee.client.audio.audioclient.AudioClient.AudioModeInternal
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
@@ -311,7 +311,7 @@ class DefaultAudioClientControllerTest {
                 any(),
                 any(),
                 any(),
-                AudioModeNative.STEREO_48K
+                AudioModeInternal.STEREO_48K
             )
         }
     }
@@ -343,7 +343,7 @@ class DefaultAudioClientControllerTest {
                     any(),
                     any(),
                     any(),
-                    AudioModeNative.MONO_16K
+                    AudioModeInternal.MONO_16K
             )
         }
     }
@@ -375,7 +375,7 @@ class DefaultAudioClientControllerTest {
                     any(),
                     any(),
                     any(),
-                    AudioModeNative.MONO_48K
+                    AudioModeInternal.MONO_48K
             )
         }
     }
@@ -407,7 +407,7 @@ class DefaultAudioClientControllerTest {
                 any(),
                 any(),
                 any(),
-                AudioModeNative.NO_AUDIO
+                AudioModeInternal.NO_AUDIO
             )
         }
     }

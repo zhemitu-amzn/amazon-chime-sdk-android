@@ -20,7 +20,7 @@ import com.amazonaws.services.chime.sdk.meetings.session.MeetingSessionStatus
 import com.amazonaws.services.chime.sdk.meetings.session.MeetingSessionStatusCode
 import com.amazonaws.services.chime.sdk.meetings.utils.logger.Logger
 import com.xodee.client.audio.audioclient.AudioClient
-import com.xodee.client.audio.audioclient.AudioClient.AudioModeNative
+import com.xodee.client.audio.audioclient.AudioClient.AudioModeInternal
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -51,7 +51,7 @@ class DefaultAudioClientController(
         var audioClientState = AudioClientState.INITIALIZED
     }
 
-    private fun setUpAudioConfiguration() {
+    private fun setUpAudioConfiguration(audioMode: AudioMode) {
         // There seems to be no call that gives us the native input sample rate, so we just use the output rate
         val nativeSR = AudioTrack.getNativeOutputSampleRate(AudioManager.STREAM_SYSTEM)
 
@@ -59,15 +59,28 @@ class DefaultAudioClientController(
         audioClient.sendMessage(AudioClient.MESS_SET_HARDWARE_SAMPLE_RATE, nativeSR)
 
         // This IO_SAMPLE_RATE is used to create OpenSLES:
+        val samplingRateConfig = when (audioMode) {
+            AudioMode.NoAudio -> 16000
+            AudioMode.Mono16K -> 16000
+            AudioMode.Mono48K -> 48000
+            AudioMode.Stereo48K -> 48000
+        }
         audioClient.sendMessage(
             AudioClient.MESS_SET_IO_SAMPLE_RATE,
-            AudioClient.AUDIO_CLIENT_SAMPLE_RATE
+            samplingRateConfig
         )
 
         // Result is in bytes, so we divide by 2 (16-bit samples)
+        // Result is in bytes, so we divide by 2 (16-bit samples)
+        val channelConfig = when (audioMode) {
+            AudioMode.NoAudio -> AudioFormat.CHANNEL_OUT_MONO
+            AudioMode.Mono16K -> AudioFormat.CHANNEL_OUT_MONO
+            AudioMode.Mono48K -> AudioFormat.CHANNEL_OUT_MONO
+            AudioMode.Stereo48K -> AudioFormat.CHANNEL_OUT_STEREO
+        }
         val spkMinBufSizeInSamples = AudioTrack.getMinBufferSize(
             nativeSR,
-            AudioFormat.CHANNEL_OUT_MONO,
+            channelConfig,
             AudioFormat.ENCODING_PCM_16BIT
         ) / 2
 
@@ -139,7 +152,7 @@ class DefaultAudioClientController(
             )
             DEFAULT_PORT
         }
-        setUpAudioConfiguration()
+        setUpAudioConfiguration(audioMode)
         eventAnalyticsController.publishEvent(EventName.meetingStartRequested)
         audioClientObserver.notifyAudioClientObserver { observer ->
             observer.onAudioSessionStartedConnecting(
@@ -153,11 +166,11 @@ class DefaultAudioClientController(
         uiScope.launch {
             muteMicAndSpeaker = audioMode == AudioMode.NoAudio
 
-            val audioModeNative = when (audioMode) {
-                AudioMode.NoAudio -> AudioModeNative.NO_AUDIO
-                AudioMode.Mono16K -> AudioModeNative.MONO_16K
-                AudioMode.Mono48K -> AudioModeNative.MONO_48K
-                AudioMode.Stereo48K -> AudioModeNative.STEREO_48K
+            val audioModeInternal = when (audioMode) {
+                AudioMode.NoAudio -> AudioModeInternal.NO_AUDIO
+                AudioMode.Mono16K -> AudioModeInternal.MONO_16K
+                AudioMode.Mono48K -> AudioModeInternal.MONO_48K
+                AudioMode.Stereo48K -> AudioModeInternal.STEREO_48K
             }
             val res = audioClient.startSessionV2(
                 AudioClient.XTL_DEFAULT_TRANSPORT,
@@ -172,7 +185,7 @@ class DefaultAudioClientController(
                 audioFallbackUrl,
                 null,
                 appInfo,
-                audioModeNative
+                audioModeInternal
             )
 
             if (res != AUDIO_CLIENT_RESULT_SUCCESS) {
