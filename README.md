@@ -137,6 +137,12 @@ You need to start the meeting session to start sending and receiving audio. Make
 meetingSession.audioVideo.start()
 ```
 
+The default audio format is Stereo/48KHz i.e Stereo Audio with 48KHz sampling rate (Stereo48K). Other supported audio formats include Mono/48KHz (Mono48K) or Mono/16KHz (Mono16K). You can specify a non-default audio mode in `AudioVideoConfiguration`, and then start the meeting session.
+
+```kotlin
+meetingSession.audioVideo.start(audioVideoConfiguration)
+```
+
 #### Use case 2. Add an observer to receive audio and video session life cycle events.
 
 > Note: To avoid missing any events, add an observer before the session starts. You can remove the observer by calling meetingSession.audioVideo.removeAudioVideoObserver(observer).
@@ -249,11 +255,21 @@ override fun onAudioDeviceChanged(freshAudioDeviceList: List<MediaDevice>) {
 
 ### Audio
 
-> Note: So far, you've added observers to receive device and session lifecycle events. In the following use cases, you'll use the real-time API methods to send and receive volume indicators and control mute state.
+#### Use case 8. Choose the audio configuration.
+
 > Attendees can join a meeting with or without audio.
+> When joining a meeting with audio, *Mono/16KHz*, *Mono/48KHz* and *Stereo/48KHz* are supported. *Stereo/48KHz* will be set as the default audio mode if not explicitly specified when starting the audio session.
 > Attendees who join without audio aka Checked-In attendees will have no audio through their Mic and Speaker. They can still enable their video and view videos of other attendees. No volume and signal updates for Checked-In attendees will be delivered to other attendees in the meeting. Attendees may want to join a meeting without audio if they just want to be shown as present in the meeting and share or view videos but are using a different audio source. For example, multiple attendees joining a meeting from a conference room may want to use common audio source installed in the conference room.
 
-#### Use case 8. Mute and unmute an audio input.
+```kotlin
+meetingSession.audioVideo.start() // starts the audio video session with Stereo/48KHz audio
+
+meetingSession.audioVideo.start(audioVideoConfiguration) // starts the audio video session with the specified [AudioVideoConfiguration]
+```
+
+> Note: So far, you've added observers to receive device and session lifecycle events. In the following use cases, you'll use the real-time API methods to send and receive volume indicators and control mute state.
+
+#### Use case 9. Mute and unmute an audio input.
 
 ```kotlin
 val muted = meetingSession.audioVideo.realtimeLocalMute() // returns true if muted, false if failed
@@ -261,7 +277,7 @@ val muted = meetingSession.audioVideo.realtimeLocalMute() // returns true if mut
 val unmuted = meetingSession.audioVideo.realtimeLocalUnmute() // returns true if unmuted, false if failed
 ```
 
-#### Use case 9. Add an observer to receive realtime events such as volume changes/signal change/muted status attendees.
+#### Use case 10. Add an observer to receive realtime events such as volume changes/signal change/muted status attendees.
 
 You can use this to build real-time indicators UI and get them updated for changes delivered by the array.
 
@@ -314,7 +330,7 @@ val observer = object : RealtimeObserver {
 meetingSession.audioVideo.addRealtimeObserver(observer)
 ```
 
-#### Use case 10. Detect active speakers and active scores of speakers.
+#### Use case 11. Detect active speakers and active scores of speakers.
 
 You can use the `onActiveSpeakerDetected` event to enlarge or emphasize the most active speaker’s video tile if available. By setting the `scoreCallbackIntervalMs` and implementing `onActiveSpeakerScoreChanged`, you can receive scores of the active speakers periodically.
 
@@ -352,7 +368,7 @@ meetingSession.audioVideo.addActiveSpeakerObserver(DefaultActiveSpeakerPolicy(),
 
 You can find more details on adding/removing/viewing video from [Building a meeting application on android using the Amazon Chime SDK](https://aws.amazon.com/blogs/business-productivity/building-a-meeting-application-on-android-using-the-amazon-chime-sdk/).
 
-#### Use case 11. Start receiving remote videos.
+#### Use case 12. Start receiving remote videos.
 
 You can call `startRemoteVideo` to start receiving remote videos, as this doesn’t happen by default.
 
@@ -360,7 +376,7 @@ You can call `startRemoteVideo` to start receiving remote videos, as this doesn�
 meetingSession.audioVideo.startRemoteVideo()
 ```
 
-#### Use case 12. Stop receiving remote videos.
+#### Use case 13. Stop receiving remote videos.
 
 `stopRemoteVideo` stops receiving remote videos and triggers `onVideoTileRemoved` for existing remote videos.
 
@@ -368,7 +384,7 @@ meetingSession.audioVideo.startRemoteVideo()
 meetingSession.audioVideo.stopRemoteVideo()
 ```
 
-#### Use case 13. View remote videos.
+#### Use case 14. View remote videos.
 
 ```kotlin
 val observer = object : VideoTileObserver {
@@ -391,7 +407,7 @@ meetingSession.audioVideo.addVideoTileObserver(observer)
 
 For more advanced video tile management, take a look at [Video Pagination](https://github.com/aws/amazon-chime-sdk-android/blob/master/guides/video_pagination.md).
 
-#### Use case 14. Start sharing your video.
+#### Use case 15. Start sharing your video.
 
 ```kotlin
 // Use internal camera capture for the local video
@@ -403,13 +419,13 @@ meetingSession.audioVideo.switchCamera()
 // Or you can inject custom video source for local video, see custom video guide
 ```
 
-#### Use case 15. Stop sharing your video.
+#### Use case 16. Stop sharing your video.
 
 ```kotlin
 meetingSession.audioVideo.stopLocalVideo()
 ```
 
-#### Use case 16. View local video.
+#### Use case 17. View local video.
 
 ```kotlin
 val observer = object : VideoTileObserver {
@@ -440,7 +456,7 @@ meetingSession.audioVideo.addVideoTileObserver(observer)
 >
 > For example, your attendee ID is "my-id". When you call `meetingSession.audioVideo.startContentShare`, the content attendee "my-id#content" will join the session and share your content.
 
-#### Use case 17. Start sharing your screen or content.
+#### Use case 18. Start sharing your screen or content.
 
 ```kotlin
 val observer = object : ContentShareObserver {
@@ -461,13 +477,13 @@ meetingSession.audioVideo.startContentShare(contentShareSource)
 
 See [Content Share](https://github.com/aws/amazon-chime-sdk-android/blob/master/guides/content_share.md) for more details.
 
-#### Use case 18. Stop sharing your screen or content.
+#### Use case 19. Stop sharing your screen or content.
 
 ```kotlin
 meetingSession.audioVideo.stopContentShare()
 ```
 
-#### Use case 19. View attendee content or screens.
+#### Use case 20. View attendee content or screens.
 
 Chime SDK allows two simultaneous content shares per meeting. Remote content shares will trigger `onVideoTileAdded`, while local share will not. To render the video for preview, add a `VideoSink` to the `VideoSource` in the `ContentShareSource`.
 
@@ -497,7 +513,7 @@ meetingSession.audioVideo.addVideoTileObserver(observer)
 
 ### Metrics
 
-#### Use case 20. Add an observer to receive the meeting metrics.
+#### Use case 21. Add an observer to receive the meeting metrics.
 
 See `ObservableMetric` for more available metrics and to monitor audio, video, and content share quality.
 
@@ -515,7 +531,7 @@ meetingSession.audioVideo.addMetricsObserver(observer)
 
 ### Data Message
 
-#### Use case 21. Add  an observer to receive data message.
+#### Use case 22. Add  an observer to receive data message.
 
 You can receive real-time messages from multiple topics after starting the meeting session.
 
@@ -537,7 +553,7 @@ const val DATA_MESSAGE_TOPIC = "chat"
 meetingSession.audioVideo.addRealtimeDataMessageObserver(DATA_MESSAGE_TOPIC, observer)
 ```
 
-#### Use case 22. Send data message.
+#### Use case 23. Send data message.
 
 You can send real time message to any topic, to which the observers that have subscribed will be notified.
 
@@ -559,7 +575,7 @@ meetingSession.audioVideo.realtimeSendDataMessage(
 
 > Note: Make sure to remove all the observers and release resources you have added to avoid any memory leaks.
 
-#### Use case 23. Stop a session.
+#### Use case 24. Stop a session.
 
 ```kotlin
 val observer = object: AudioVideoObserver {  
@@ -581,7 +597,7 @@ meetingSession.audioVideo.stop()
 
 Amazon Voice Focus reduces the background noise in the meeting for better meeting experience. For more details, see [Amazon Voice Focus](https://github.com/aws/amazon-chime-sdk-android/blob/master/guides/api_overview.md#11-using-amazon-voice-focus-optional).
 
-#### Use case 24. Enable/Disable Amazon Voice Focus.
+#### Use case 25. Enable/Disable Amazon Voice Focus.
 
 ```kotlin
 val enbabled = meetingSession.audioVideo.realtimeSetVoiceFocusEnabled(true) // enabling Amazon Voice Focus successful
