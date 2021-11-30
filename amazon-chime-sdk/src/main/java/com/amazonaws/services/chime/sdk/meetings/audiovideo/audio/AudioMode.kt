@@ -10,22 +10,18 @@ package com.amazonaws.services.chime.sdk.meetings.audiovideo.audio
  */
 enum class AudioMode(val value: Int) {
     /**
-     * There will be no audio through mic and speaker.
-     */
-    NoAudio(0),
-
-    /**
-     * The mono audio mode with single audio channel and 16KHz sampling rate.
+     * The mono audio mode with single audio channel and 16KHz sampling rate, for both speaker and microphone.
      */
     Mono16K(1),
 
     /**
-     * The mono audio mode with single audio channel and 48KHz sampling rate.
+     * The mono audio mode with single audio channel and 48KHz sampling rate, for both speaker and microphone.
      */
     Mono48K(2),
 
     /**
-     * The stereo audio mode with two audio channels and 48KHz sampling rate.
+     * The stereo audio mode with two audio channels for speaker, and single audio channel for microphone,
+     * both with 48KHz sampling rate.
      */
     Stereo48K(3);
 

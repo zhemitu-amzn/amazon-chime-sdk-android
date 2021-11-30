@@ -60,7 +60,6 @@ class DefaultAudioClientController(
 
         // This IO_SAMPLE_RATE is used to create OpenSLES:
         val samplingRateConfig = when (audioMode) {
-            AudioMode.NoAudio -> 16000
             AudioMode.Mono16K -> 16000
             AudioMode.Mono48K -> 48000
             AudioMode.Stereo48K -> 48000
@@ -71,16 +70,14 @@ class DefaultAudioClientController(
         )
 
         // Result is in bytes, so we divide by 2 (16-bit samples)
-        // Result is in bytes, so we divide by 2 (16-bit samples)
-        val channelConfig = when (audioMode) {
-            AudioMode.NoAudio -> AudioFormat.CHANNEL_OUT_MONO
+        val outputChannelConfig = when (audioMode) {
             AudioMode.Mono16K -> AudioFormat.CHANNEL_OUT_MONO
             AudioMode.Mono48K -> AudioFormat.CHANNEL_OUT_MONO
             AudioMode.Stereo48K -> AudioFormat.CHANNEL_OUT_STEREO
         }
         val spkMinBufSizeInSamples = AudioTrack.getMinBufferSize(
             nativeSR,
-            channelConfig,
+            outputChannelConfig,
             AudioFormat.ENCODING_PCM_16BIT
         ) / 2
 
@@ -164,10 +161,7 @@ class DefaultAudioClientController(
         val appInfo = AppInfoUtil.initializeAudioClientAppInfo(context)
 
         uiScope.launch {
-            muteMicAndSpeaker = audioMode == AudioMode.NoAudio
-
             val audioModeInternal = when (audioMode) {
-                AudioMode.NoAudio -> AudioModeInternal.NO_AUDIO
                 AudioMode.Mono16K -> AudioModeInternal.MONO_16K
                 AudioMode.Mono48K -> AudioModeInternal.MONO_48K
                 AudioMode.Stereo48K -> AudioModeInternal.STEREO_48K

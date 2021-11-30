@@ -360,14 +360,6 @@ class DefaultAudioClientObserver(
             }
         }
 
-        attendeesByStatus[AttendeeStatus.JoinedNoAudio]?.let {
-            val attendeeJoinedWithoutAudio = it.minus(currentAttendees)
-            if (attendeeJoinedWithoutAudio.isNotEmpty()) {
-                onAttendeesJoinWithoutAudio(attendeeJoinedWithoutAudio.toTypedArray())
-                currentAttendees.addAll(attendeeJoinedWithoutAudio)
-            }
-        }
-
         attendeesByStatus[AttendeeStatus.Left]?.let {
             onAttendeesLeft(it.toTypedArray())
             currentAttendees.removeAll(it)
@@ -393,15 +385,6 @@ class DefaultAudioClientObserver(
             attendeeUpdate.profileId,
             externalUserId
         )
-    }
-
-    private fun onAttendeesJoinWithoutAudio(attendeeInfo: Array<AttendeeInfo>) {
-        logger.debug(TAG, "Joined without Audio: ${attendeeInfo.joinToString(" ")}")
-        ObserverUtils.notifyObserverOnMainThread(realtimeEventObservers) {
-            it.onAttendeesJoinedWithoutAudio(
-                attendeeInfo
-            )
-        }
     }
 
     private fun onAttendeesJoin(attendeeInfo: Array<AttendeeInfo>) {

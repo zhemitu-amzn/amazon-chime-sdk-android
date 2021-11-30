@@ -267,8 +267,6 @@ class MeetingFragment : Fragment(),
             AudioMode.from(intValue, defaultAudioMode = AudioMode.Stereo48K)
         } ?: AudioMode.Stereo48K
         val audioVideoConfig = AudioVideoConfiguration(audioMode = audioMode)
-        // Update the Mic & Speaker states
-        updateLocalAttendeeAudioState(audioEnabled = audioVideoConfig.audioMode != AudioMode.NoAudio)
         // Start Audio Video
         audioVideo.start(audioVideoConfig)
         audioVideo.startRemoteVideo()
@@ -616,10 +614,6 @@ class MeetingFragment : Fragment(),
         onAttendeesJoinedWithStatus(attendeeInfo, AttendeeStatus.Joined)
     }
 
-    override fun onAttendeesJoinedWithoutAudio(attendeeInfo: Array<AttendeeInfo>) {
-        onAttendeesJoinedWithStatus(attendeeInfo, AttendeeStatus.JoinedNoAudio)
-    }
-
     override fun onAttendeesLeft(attendeeInfo: Array<AttendeeInfo>) {
         uiScope.launch {
             mutex.withLock {
@@ -739,16 +733,6 @@ class MeetingFragment : Fragment(),
 
                 rosterAdapter.notifyDataSetChanged()
             }
-        }
-    }
-
-    private fun updateLocalAttendeeAudioState(audioEnabled: Boolean) {
-        if (audioEnabled) {
-            buttonMute.visibility = View.VISIBLE
-            buttonSpeaker.visibility = View.VISIBLE
-        } else {
-            buttonMute.visibility = View.GONE
-            buttonSpeaker.visibility = View.GONE
         }
     }
 

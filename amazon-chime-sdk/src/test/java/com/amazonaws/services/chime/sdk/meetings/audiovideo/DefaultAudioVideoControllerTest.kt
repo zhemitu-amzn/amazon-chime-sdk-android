@@ -92,22 +92,6 @@ class DefaultAudioVideoControllerTest {
     }
 
     @Test
-    fun `start with no audio should call audioClientController start with the parameters in configuration and no audio`() {
-        val testAudioVideoConfiguration = AudioVideoConfiguration(audioMode = AudioMode.NoAudio)
-        audioVideoController.start(testAudioVideoConfiguration)
-        verify {
-            audioClientController.start(
-                audioFallbackURL,
-                audioHostURL,
-                meetingId,
-                attendeeId,
-                joinToken,
-                AudioMode.NoAudio
-            )
-        }
-    }
-
-    @Test
     fun `start with mono 16KHz should call audioClientController start with the parameters in configuration and mono 16KHz`() {
         val testAudioVideoConfiguration = AudioVideoConfiguration(audioMode = AudioMode.Mono16K)
         audioVideoController.start(testAudioVideoConfiguration)

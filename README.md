@@ -257,9 +257,7 @@ override fun onAudioDeviceChanged(freshAudioDeviceList: List<MediaDevice>) {
 
 #### Use case 8. Choose the audio configuration.
 
-> Attendees can join a meeting with or without audio.
-> When joining a meeting with audio, *Mono/16KHz*, *Mono/48KHz* and *Stereo/48KHz* are supported. *Stereo/48KHz* will be set as the default audio mode if not explicitly specified when starting the audio session.
-> Attendees who join without audio aka Checked-In attendees will have no audio through their Mic and Speaker. They can still enable their video and view videos of other attendees. No volume and signal updates for Checked-In attendees will be delivered to other attendees in the meeting. Attendees may want to join a meeting without audio if they just want to be shown as present in the meeting and share or view videos but are using a different audio source. For example, multiple attendees joining a meeting from a conference room may want to use common audio source installed in the conference room.
+> When joining a meeting, *Mono/16KHz*, *Mono/48KHz* and *Stereo/48KHz* are supported. *Stereo/48KHz* will be set as the default audio mode if not explicitly specified when starting the audio session.
 
 ```kotlin
 meetingSession.audioVideo.start() // starts the audio video session with Stereo/48KHz audio
@@ -304,10 +302,6 @@ val observer = object : RealtimeObserver {
 
     override fun onAttendeesJoined(attendeeInfo: Array<AttendeeInfo>) {
         attendeeInfo.forEach { logger.info(TAG, "${attendeeInfo.attendeeId} joined the meeting") }
-    }
-
-    override fun onAttendeesJoinedWithoutAudio(attendeeInfo: Array<AttendeeInfo>) {
-        attendeeInfo.forEach { logger.info(TAG, "${attendeeInfo.attendeeId} joined the meeting without audio") }
     }
 
     override fun onAttendeesLeft(attendeeInfo: Array<AttendeeInfo>) {

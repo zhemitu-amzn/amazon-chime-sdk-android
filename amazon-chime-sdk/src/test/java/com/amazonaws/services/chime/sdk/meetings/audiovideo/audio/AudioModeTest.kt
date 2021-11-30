@@ -6,7 +6,6 @@ import org.junit.Test
 class AudioModeTest {
     @Test
     fun `get enum value from int`() {
-        Assert.assertEquals(AudioMode.from(0), AudioMode.NoAudio)
         Assert.assertEquals(AudioMode.from(1), AudioMode.Mono16K)
         Assert.assertEquals(AudioMode.from(2), AudioMode.Mono48K)
         Assert.assertEquals(AudioMode.from(3), AudioMode.Stereo48K)

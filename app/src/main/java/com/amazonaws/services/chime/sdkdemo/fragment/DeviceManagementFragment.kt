@@ -132,12 +132,6 @@ class DeviceManagementFragment : Fragment(), DeviceChangeObserver {
         audioDeviceSpinner.setSelection(0, true)
         audioDeviceSpinner.onItemSelectedListener = onAudioDeviceSelected
 
-        if (audioMode == AudioMode.NoAudio) {
-            // Only changing the visibility, instead of refactoring the entire audio device management logic
-            view.findViewById<TextView>(R.id.textViewAudioDevice).visibility = View.GONE
-            audioDeviceSpinner.visibility = View.GONE
-        }
-
         videoDeviceSpinner = view.findViewById(R.id.spinnerVideoDevice)
         videoDeviceArrayAdapter = ArrayAdapter(context, android.R.layout.simple_spinner_item, videoDevices)
         videoDeviceSpinner.adapter = videoDeviceArrayAdapter

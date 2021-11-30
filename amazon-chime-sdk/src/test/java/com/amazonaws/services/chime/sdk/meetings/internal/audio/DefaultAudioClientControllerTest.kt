@@ -381,38 +381,6 @@ class DefaultAudioClientControllerTest {
     }
 
     @Test
-    fun `start with No Audio should call AudioClient startSessionV2 with No Audio and  mute mic and speaker as true`() {
-        setupStartTests()
-
-        audioClientController.start(
-            testAudioFallbackUrl,
-            testAudioHostUrl,
-            testMeetingId,
-            testAttendeeId,
-            testJoinToken,
-            AudioMode.NoAudio
-        )
-
-        verify {
-            mockAudioClient.startSessionV2(
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                any(),
-                true,
-                true,
-                any(),
-                any(),
-                any(),
-                any(),
-                AudioModeInternal.NO_AUDIO
-            )
-        }
-    }
-
-    @Test
     fun `start should call AudioManger setMode`() {
         setupStartTests()
 

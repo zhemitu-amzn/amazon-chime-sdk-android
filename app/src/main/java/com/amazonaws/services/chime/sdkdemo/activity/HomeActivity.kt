@@ -59,7 +59,7 @@ class HomeActivity : AppCompatActivity() {
     private var meetingID: String? = null
     private var yourName: String? = null
     private var testUrl: String = ""
-    private var audioModes = listOf("Stereo/48KHz Audio", "Mono/48KHz Audio", "Mono/16KHz Audio", "No Audio")
+    private var audioModes = listOf("Stereo/48KHz Audio", "Mono/48KHz Audio", "Mono/16KHz Audio")
     private lateinit var audioVideoConfig: AudioVideoConfiguration
     private lateinit var debugSettingsViewModel: DebugSettingsViewModel
 
@@ -100,7 +100,6 @@ class HomeActivity : AppCompatActivity() {
             0 -> audioVideoConfig = AudioVideoConfiguration(audioMode = AudioMode.Stereo48K)
             1 -> audioVideoConfig = AudioVideoConfiguration(audioMode = AudioMode.Mono48K)
             2 -> audioVideoConfig = AudioVideoConfiguration(audioMode = AudioMode.Mono16K)
-            3 -> audioVideoConfig = AudioVideoConfiguration(audioMode = AudioMode.NoAudio)
         }
 
         meetingID = meetingEditText?.text.toString().trim().replace("\\s+".toRegex(), "+")
